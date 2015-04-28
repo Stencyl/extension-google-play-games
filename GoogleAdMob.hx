@@ -58,7 +58,7 @@ class GoogleAdMob
 		
 		if(_init_func == null)
 		{
-			_init_func = JNI.createStaticMethod("com/stencyl/Ads/AdMob", "initBanner", "(Ljava/lang/String;I)V", true);
+			_init_func = JNI.createStaticMethod("com/stencyl/GoogleServices/AdMob", "initBanner", "(Ljava/lang/String;I)V", true);
 		}
 	
 		var args = new Array<Dynamic>();
@@ -80,7 +80,7 @@ class GoogleAdMob
 		
 		if(_show_func == null)
 		{
-			_show_func = JNI.createStaticMethod("com/stencyl/Ads/AdMob", "showBanner", "()V", true);
+			_show_func = JNI.createStaticMethod("com/stencyl/GoogleServices/AdMob", "showBanner", "()V", true);
 		}
 
 		var args = new Array<Dynamic>();
@@ -98,7 +98,7 @@ class GoogleAdMob
 		
 		if(_hide_func == null)
 		{
-			_hide_func = JNI.createStaticMethod("com/stencyl/Ads/AdMob", "hideBanner", "()V", true);
+			_hide_func = JNI.createStaticMethod("com/stencyl/GoogleServices/AdMob", "hideBanner", "()V", true);
 		}
 
 		var args = new Array<Dynamic>();
