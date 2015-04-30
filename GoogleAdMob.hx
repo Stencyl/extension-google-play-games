@@ -75,7 +75,7 @@ class GoogleAdMob
 		#if android
 		if(!initialized)
 		{
-			Ads.initialize(MyAssets.whirlID, MyAssets.adPositionBottom ? 0 : 1);
+			GoogleAdMob.initialize(MyAssets.whirlID, MyAssets.adPositionBottom ? 0 : 1);
 		}
 		
 		if(_show_func == null)
@@ -93,7 +93,7 @@ class GoogleAdMob
 		#if android
 		if(!initialized)
 		{
-			Ads.initialize(MyAssets.whirlID, MyAssets.adPositionBottom ? 0 : 1);
+			GoogleAdMob.initialize(MyAssets.whirlID, MyAssets.adPositionBottom ? 0 : 1);
 		}
 		
 		if(_hide_func == null)
