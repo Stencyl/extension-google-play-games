@@ -351,11 +351,16 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
 
         completedQuests.clear();
         
-        for (int i=0; i < qb.getCount(); i++) {
-        	completedQuests.add(qb.get(i).getQuestId());
+        if (qb != null)
+        {
+        	for (int i=0; i < qb.getCount(); i++) {
+        		completedQuests.add(qb.get(i).getQuestId());
+        	}
+        	
+        	qb.close();        	
         }
         
-        qb.close();
+        
     }
     
     public void onQuestCompleted(Quest quest) {
