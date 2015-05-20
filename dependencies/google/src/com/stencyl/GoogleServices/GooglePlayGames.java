@@ -2,6 +2,7 @@ package com.stencyl.GoogleServices;
 
 import org.haxe.extension.Extension;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.nio.charset.Charset;
 import android.app.Activity;
@@ -26,10 +27,11 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 
-public class GooglePlayGames extends Extension implements QuestUpdateListener
+public class GooglePlayGames extends Extension implements QuestUpdateListener, ResultCallback
 {
     static GameHelper mHelper;
-    static ArrayList<String> questsCompleted = new ArrayList<String>();
+    static HashMap<String, String> questRewards = new HashMap<String,String>();
+    static ArrayList<String> completedQuests = new ArrayList<String>();
     static boolean newQuestCompleted = false;
 	static GooglePlayGames mpg = null;
     
@@ -58,6 +60,9 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener
 							// handle sign-in succeess
 							Log.d("GPG", "onSignInSucceeded");
 							Games.Quests.registerQuestUpdateListener(mHelper.getApiClient(), mpg);
+							
+							PendingResult pr = Games.Quests.load(mHelper.getApiClient(), new int[]{Games.Quests.SELECT_COMPLETED}, Games.Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
+							pr.setResultCallback(mpg);							
 						}
 						@Override
 						public void onSignInFailed() {
@@ -264,9 +269,15 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener
         });
     }
     
+    static public String getQuestReward(String id)
+    {
+    	return questRewards.get(id);
+    }
+    
     static public String[] getCompletedQuestList()
     {
-    	return questsCompleted.toArray(new String[questsCompleted.size()]);
+    	
+    	return completedQuests.toArray(new String[completedQuests.size()]);    	
     }
     
     static public boolean hasNewQuestCompleted()
@@ -328,6 +339,25 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener
         return true;
     }
     
+    public void onResult(Result result) 
+    {
+    	if (result == null || !(result instanceof Quests.LoadQuestsResult))
+    	{
+    		return;
+    	}
+    	
+        Quests.LoadQuestsResult r = (Quests.LoadQuestsResult)result;
+        QuestBuffer qb = r.getQuests();
+
+        completedQuests.clear();
+        
+        for (int i=0; i < qb.getCount(); i++) {
+        	completedQuests.add(qb.get(i).getQuestId());
+        }
+        
+        qb.close();
+    }
+    
     public void onQuestCompleted(Quest quest) {
 
     	Log.d("GPG", "New Quest Completed, Updating info. (Java 1)");
@@ -344,9 +374,9 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener
         // should also let the player know the quest was completed and
         // the reward was claimed; for example, by displaying a toast.
         // ...
-        
-        questsCompleted.add(quest.getQuestId() + ":" + reward);        
+                
+        questRewards.put(quest.getQuestId(), reward);    
+        completedQuests.add(quest.getQuestId());
         newQuestCompleted = true;
-    }    
-
+    }
 }

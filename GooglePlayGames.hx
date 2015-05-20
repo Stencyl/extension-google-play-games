@@ -44,6 +44,7 @@ class GooglePlayGames
 	private static var android_updateEvent:Dynamic;
 	private static var android_getCompletedQuestList:Dynamic;
 	private static var android_hasNewQuestCompleted:Dynamic;
+	private static var android_getQuestReward:Dynamic;
     #end
 
     public static function initGooglePlayGames():Void
@@ -242,35 +243,57 @@ class GooglePlayGames
         #end
     }
 	
-	public static function hasNewQuestCompleted():Array<String>
+	public static function hasNewQuestCompleted():Bool
     {
         #if android
         if (android_hasNewQuestCompleted == null)
         {
-            android_hasNewQuestCompleted = JNI.createStaticMethod(ANDROID_CLASS, "hasNewQuestCompleted", "()V", true);
+            android_hasNewQuestCompleted = JNI.createStaticMethod(ANDROID_CLASS, "hasNewQuestCompleted", "()Z", true);
         }
         
         var args:Array<Dynamic> = new Array<Dynamic>();
-		var ret:Array<String> = cast android_hasNewQuestCompleted(args);
+		var ret:Bool = cast android_hasNewQuestCompleted(args);
         return ret;
         #end
 		
-		return null;
+		return false;
     }
+	
+	public static function getQuestReward(id:String):String
+    {
+		#if android
+        if (android_getQuestReward == null)
+        {
+            android_getQuestReward = JNI.createStaticMethod(ANDROID_CLASS, "getQuestReward", "(Ljava/lang/String;)Ljava/lang/String;", true);
+        }
+        
+        var args = [id];
+		var ret:String = cast android_getQuestReward(args);
+		
+		if (ret == null)
+		{
+			trace("No reward text recieved for quest: " + id);
+			ret = "";
+		}
+        return ret;
+        #end
+		
+		return "";
+	}
 	
 	public static function getCompletedQuestList():Array<String>
     {
         #if android
         if (android_getCompletedQuestList == null)
         {
-            android_getCompletedQuestList = JNI.createStaticMethod(ANDROID_CLASS, "getCompletedQuestList", "()V", true);
+            android_getCompletedQuestList = JNI.createStaticMethod(ANDROID_CLASS, "getCompletedQuestList", "()[Ljava/lang/String;", true);
         }
         
         var args:Array<Dynamic> = new Array<Dynamic>();
-		var ret:Array<String> = cast android_getCompletedQuestList(args)(args);
+		var ret:Array<String> = cast android_getCompletedQuestList(args);
         return ret;
         #end
 		
-		return null;
+		return new Array<String>();
     }
 }
