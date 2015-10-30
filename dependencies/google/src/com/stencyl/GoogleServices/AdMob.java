@@ -1,6 +1,7 @@
 package com.stencyl.GoogleServices;
 
 import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,6 +23,8 @@ import dalvik.system.DexClassLoader;
 public class AdMob extends Extension
 {
 	private static LinearLayout layout;
+    private static AdRequest adReq;
+    private static HaxeObject callback;
     
     private static boolean initialized = false;
 
@@ -30,30 +33,74 @@ public class AdMob extends Extension
     
     /// --- Banners --- ///
 
-	static public void initBanner(final String adUnitID, final int position)
+	static public void init(final HaxeObject cb, final String adUnitID, final String adUnitID1, final int position)
 	{
+        callback = cb;
+        
 		mainActivity.runOnUiThread(new Runnable()
 		{
         	public void run()
 			{
-                adView = new AdView(mainActivity);
-                adView.setAdSize(AdSize.BANNER);
-                adView.setAdUnitId(adUnitID);
+                AdRequest.Builder builder = new AdRequest.Builder();
+                builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+                adReq = builder.build();
+                //banner
+                if(adUnitID!=""){
+                    layout = new LinearLayout(mainActivity);
+                    setBannerPosition(position);
+                    
+                    adView = new AdView(mainActivity);
+                    adView.setAdUnitId(adUnitID);
+                    adView.setAdSize(AdSize.SMART_BANNER);
+                    adView.setAdListener(new AdListener() {
+                        public void onAdLoaded() {
+                            showBanner();
+                            callback.call("onAdmobLoaded", new Object[] {});
+                        }
+                        public void onAdFailedToLoad(int errorcode) {
+                            callback.call("onAdmobFailed", new Object[] {});
+                        }
+                        public void onAdClosed(){
+                            callback.call("onAdmobClosed", new Object[] {});
+                        }
+                        public void onAdOpened(){
+                            callback.call("onAdmobOpened", new Object[] {});
+                        }
+                    });
+                    
+                    mainActivity.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+                    layout.addView(adView);
+                    layout.bringToFront();
+                    
+                    adView.loadAd(adReq);
+            
+                }
+                //Interstitial
+                if(adUnitID1!=""){
+                    interstitial = new InterstitialAd(mainActivity);
+                    interstitial.setAdUnitId(adUnitID1);
+                    interstitial.setAdListener(new AdListener() {
+                        public void onAdLoaded() {
+                            callback.call("onAdmobLoaded", new Object[] {});
+                        }
+                        public void onAdFailedToLoad(int errorcode) {
+                            callback.call("onAdmobFailed", new Object[] {});
+                        }
+                        public void onAdClosed(){
+                            callback.call("onAdmobClosed", new Object[] {});
+                        }
+                        public void onAdOpened(){
+                            callback.call("onAdmobOpened", new Object[] {});
+                        }
+                    });
+                    
+                    interstitial.loadAd(adReq);
+                }
                 
-				layout = new LinearLayout(mainActivity);
-                
-                setBannerPosition(position);
-                
-                AdRequest adRequest = new AdRequest.Builder().build();
-    			adView.loadAd(adRequest);
-                
-                layout.addView(adView);
-                mainActivity.addContentView(layout, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-                
-                adView.setVisibility(AdView.GONE);
             }
         });
-	}
+    }
+
 
 	static public void showBanner()
 	{
@@ -61,14 +108,12 @@ public class AdMob extends Extension
         {
         	public void run() 
 			{
-				if(adView != null && adView.getVisibility() == AdView.GONE)
-				{
+				
      				adView.setVisibility(AdView.VISIBLE);
                     
                     Animation animation1 = new AlphaAnimation(0.0f, 1.0f);
                     animation1.setDuration(1000);
                     layout.startAnimation(animation1);
-				}
             }
         });
     }
@@ -79,8 +124,6 @@ public class AdMob extends Extension
         {
         	public void run() 
         	{
-				if(adView != null && adView.getVisibility() == AdView.VISIBLE)
-				{
                     Animation animation1 = new AlphaAnimation(1.0f, 0.0f);
                     animation1.setDuration(1000);
                     layout.startAnimation(animation1);
@@ -92,7 +135,6 @@ public class AdMob extends Extension
                             adView.setVisibility(AdView.GONE);
                         }
                     }, 1000);
-				}
             }
         });
 	}
@@ -161,4 +203,32 @@ public class AdMob extends Extension
         
         super.onDestroy();
     }
+    
+    /// --- Interstitials --- ///
+    
+    static public void loadInterstitial()
+    {
+        mainActivity.runOnUiThread(new Runnable()
+                                   {
+            public void run()
+            {
+                interstitial.loadAd(adReq);
+            }
+        });
+    }
+    
+    static public void showInterstitial()
+    {
+        mainActivity.runOnUiThread(new Runnable()
+                                   {
+            public void run()
+            {
+               if(interstitial.isLoaded())
+               {
+                   interstitial.show();
+               }
+            }
+        });
+    }
+    
 }
