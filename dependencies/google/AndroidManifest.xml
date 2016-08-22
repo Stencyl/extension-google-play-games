@@ -4,13 +4,13 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
     <application>
-        <meta-data android:name="com.google.android.gms.version"
-         android:value="6111000"/>
-         
-         <meta-data android:value="@string/app_id" android:name="com.google.android.gms.games.APP_ID"/>   
-         <meta-data android:value="@string/app_id" android:name="com.google.android.gms.appstate.APP_ID"/>
-         <activity android:name="com.google.android.gms.ads.AdActivity"
-         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
+        <meta-data
+        android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version" />
+        
+        <meta-data android:value="@string/app_id" android:name="com.google.android.gms.games.APP_ID"/>
+        <meta-data android:value="@string/app_id" android:name="com.google.android.gms.appstate.APP_ID"/> -->
+        
 	</application>
 	
 	
