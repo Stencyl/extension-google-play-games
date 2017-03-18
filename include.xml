@@ -5,7 +5,7 @@
       
     <classpath name="src" />
     
-    <dependency name="google" path="dependencies/google" if="android" />
+    <dependency name="google" path="dependencies/google" />
     <android extension="com.stencyl.GoogleServices.GooglePlayGames" />
     <!-- <android extension="com.stencyl.GoogleServices.AdMob"/> -->
 
