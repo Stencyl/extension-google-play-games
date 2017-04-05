@@ -12,7 +12,6 @@ import nme.Lib;
 import openfl.utils.JNI;
 #end
 
-import scripts.MyAssets;
 import com.stencyl.Engine;
 import com.stencyl.event.EventMaster;
 import com.stencyl.event.StencylEvent;
