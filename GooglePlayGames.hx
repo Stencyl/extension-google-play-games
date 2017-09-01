@@ -9,7 +9,7 @@ import nme.Lib;
 #end
 
 #if android
-import openfl.utils.JNI;
+import lime.system.JNI;
 #end
 
 import com.stencyl.Engine;
