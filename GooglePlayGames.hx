@@ -51,10 +51,11 @@ class GooglePlayGames
         #if android
         if (android_initGooglePlayGames == null)
         {
-            android_initGooglePlayGames = JNI.createStaticMethod(ANDROID_CLASS, "initGooglePlayGames", "()V", true);
+            android_initGooglePlayGames = JNI.createStaticMethod(ANDROID_CLASS, "initGooglePlayGames", "(Lorg/haxe/lime/HaxeObject;)V", true);
         }
         
         var args = new Array<Dynamic>();
+		args.push(new GooglePlayGames());
         android_initGooglePlayGames(args);
         #end    
     }
@@ -295,4 +296,14 @@ class GooglePlayGames
 		
 		return new Array<String>();
     }
+	
+	public function new()
+	{
+	
+	}
+	
+	public function onSignInFailed(error:String)
+	{
+		trace(error);
+	}
 }

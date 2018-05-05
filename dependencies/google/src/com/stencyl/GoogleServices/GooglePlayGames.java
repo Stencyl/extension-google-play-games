@@ -1,6 +1,7 @@
 package com.stencyl.GoogleServices;
 
 import org.haxe.extension.Extension;
+import org.haxe.lime.HaxeObject;
 
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
     static ArrayList<String> completedQuests = new ArrayList<String>();
     static boolean newQuestCompleted = false;
 	static GooglePlayGames mpg = null;
+	static HaxeObject haxeCallback;
     
     public GooglePlayGames()
     {
@@ -42,7 +44,7 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
     	mpg = this;
     }
     
-    static public void initGooglePlayGames()
+    static public void initGooglePlayGames(final HaxeObject obj)
     {
         Log.d("GPG", "Initialiazing Google Play Games (Java)");        
         
@@ -50,6 +52,7 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         {
         	public void run()
         	{
+				haxeCallback = obj;
                 if (mHelper == null){
 				
 					mHelper = new GameHelper(mainActivity, GameHelper.CLIENT_GAMES);
@@ -69,6 +72,15 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
 							// handle sign-in failure (e.g. show Sign In button)
 							Log.d("GPG", "onSignInFailed");
 							Log.d("GPG", "user cancelled: " + mHelper.hasUserCancellation());
+							
+							String serviceErrorCode = String.valueOf(mHelper.getSignInError().getServiceErrorCode());
+							// https://developers.google.com/android/reference/com/google/android/gms/common/ConnectionResult
+							
+							String activityResultCode = String.valueOf(mHelper.getSignInError().getActivityResultCode());
+							// https://developers.google.com/android/reference/com/google/android/gms/games/GamesActivityResultCodes
+							
+							String errorText = new String("GPG sign in failed (service error code: " + serviceErrorCode + ", activity result code: " + activityResultCode + ").");
+							haxeCallback.call("onSignInFailed", new Object[] {errorText});
 						}
 						
 					};
