@@ -73,14 +73,17 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
 							Log.d("GPG", "onSignInFailed");
 							Log.d("GPG", "user cancelled: " + mHelper.hasUserCancellation());
 							
-							String serviceErrorCode = String.valueOf(mHelper.getSignInError().getServiceErrorCode());
-							// https://developers.google.com/android/reference/com/google/android/gms/common/ConnectionResult
-							
-							String activityResultCode = String.valueOf(mHelper.getSignInError().getActivityResultCode());
-							// https://developers.google.com/android/reference/com/google/android/gms/games/GamesActivityResultCodes
-							
-							String errorText = new String("GPG sign in failed (service error code: " + serviceErrorCode + ", activity result code: " + activityResultCode + ").");
-							haxeCallback.call("onSignInFailed", new Object[] {errorText});
+							if (mHelper.getSignInError() != null)
+							{
+								String serviceErrorCode = String.valueOf(mHelper.getSignInError().getServiceErrorCode());
+								// https://developers.google.com/android/reference/com/google/android/gms/common/ConnectionResult
+								
+								String activityResultCode = String.valueOf(mHelper.getSignInError().getActivityResultCode());
+								// https://developers.google.com/android/reference/com/google/android/gms/games/GamesActivityResultCodes
+								
+								String errorText = new String("GPG sign in failed (service error code: " + serviceErrorCode + ", activity result code: " + activityResultCode + ").");
+								haxeCallback.call("onSignInFailed", new Object[] {errorText});
+							}
 						}
 						
 					};
