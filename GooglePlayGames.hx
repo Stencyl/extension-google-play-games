@@ -2,8 +2,6 @@ package;
 
 #if cpp
 import cpp.Lib;
-#elseif neko
-import neko.Lib;
 #else
 import nme.Lib;
 #end
