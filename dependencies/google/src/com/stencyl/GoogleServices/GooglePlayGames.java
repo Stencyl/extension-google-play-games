@@ -18,7 +18,7 @@ import android.view.Gravity;
 import android.view.animation.Animation;
 import android.view.animation.AlphaAnimation;
 import android.util.Log;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.common.api.*;
 import com.google.android.gms.games.*;
