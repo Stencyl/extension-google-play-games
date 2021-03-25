@@ -3,6 +3,7 @@
 
   <section if="android">
     
+    <source path="src" />
     <dependency name="google" path="dependencies/google" />
     <android extension="com.stencyl.GoogleServices.GooglePlayGames" />
 

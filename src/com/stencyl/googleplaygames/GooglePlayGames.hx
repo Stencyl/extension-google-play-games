@@ -1,4 +1,4 @@
-package;
+package com.stencyl.googleplaygames;
 
 #if cpp
 import cpp.Lib;
