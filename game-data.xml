@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+
+	<include>
+		<field name="enableGPG" type="boolean" />
+	</include>
+
+	<config classname="com.stencyl.googleplaygames.GPGConfig">
+		<field name="googleAppID" type="text" embedded="true" />
+	</config>
+
+</data>
