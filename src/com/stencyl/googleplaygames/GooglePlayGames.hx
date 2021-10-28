@@ -3,7 +3,7 @@ package com.stencyl.googleplaygames;
 #if cpp
 import cpp.Lib;
 #else
-import nme.Lib;
+import openfl.Lib;
 #end
 
 #if android
@@ -14,9 +14,9 @@ import com.stencyl.Engine;
 import com.stencyl.event.EventMaster;
 import com.stencyl.event.StencylEvent;
 
-import nme.utils.ByteArray;
-import nme.display.BitmapData;
-import nme.geom.Rectangle;
+import openfl.utils.ByteArray;
+import openfl.display.BitmapData;
+import openfl.geom.Rectangle;
 
 class GooglePlayGames
 {
