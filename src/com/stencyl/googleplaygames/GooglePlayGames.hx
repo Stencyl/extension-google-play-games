@@ -20,12 +20,6 @@ class GooglePlayGames
     private static var android_showAllLeaderboards:Dynamic;
     private static var android_showLeaderboard:Dynamic;
     private static var android_submitScore:Dynamic;
-    private static var android_showQuests:Dynamic;
-    private static var android_getCompletedQuests:Dynamic;
-    private static var android_updateEvent:Dynamic;
-    private static var android_getCompletedQuestList:Dynamic;
-    private static var android_hasNewQuestCompleted:Dynamic;
-    private static var android_getQuestReward:Dynamic;
     
     public function new()
     {
@@ -178,70 +172,6 @@ class GooglePlayGames
         
         var args:Array<Dynamic> = [id, score];
         android_submitScore(args);
-    }
-	
-	public static function showQuests():Void
-    {
-        if (android_showQuests == null)
-        {
-            android_showQuests = JNI.createStaticMethod(ANDROID_CLASS, "showQuests", "()V", true);
-        }
-        
-        var args = new Array<Dynamic>();
-        android_showQuests(args);
-    }
-	
-	public static function updateEvent(id:String, amount:Int):Void
-    {
-        if (android_updateEvent == null)
-        {
-            android_updateEvent = JNI.createStaticMethod(ANDROID_CLASS, "updateEvent", "(Ljava/lang/String;I)V", true);
-        }
-        
-        var args:Array<Dynamic> = [id, amount];
-        android_updateEvent(args);
-    }
-	
-	public static function hasNewQuestCompleted():Bool
-    {
-        if (android_hasNewQuestCompleted == null)
-        {
-            android_hasNewQuestCompleted = JNI.createStaticMethod(ANDROID_CLASS, "hasNewQuestCompleted", "()Z", true);
-        }
-        
-        var args:Array<Dynamic> = new Array<Dynamic>();
-		var ret:Bool = cast android_hasNewQuestCompleted(args);
-        return ret;
-    }
-	
-	public static function getQuestReward(id:String):String
-    {
-		if (android_getQuestReward == null)
-        {
-            android_getQuestReward = JNI.createStaticMethod(ANDROID_CLASS, "getQuestReward", "(Ljava/lang/String;)Ljava/lang/String;", true);
-        }
-        
-        var args = [id];
-		var ret:String = cast android_getQuestReward(args);
-		
-		if (ret == null)
-		{
-			trace("No reward text recieved for quest: " + id);
-			ret = "";
-		}
-        return ret;
-	}
-	
-	public static function getCompletedQuestList():Array<String>
-    {
-        if (android_getCompletedQuestList == null)
-        {
-            android_getCompletedQuestList = JNI.createStaticMethod(ANDROID_CLASS, "getCompletedQuestList", "()[Ljava/lang/String;", true);
-        }
-        
-        var args:Array<Dynamic> = new Array<Dynamic>();
-		var ret:Array<String> = cast android_getCompletedQuestList(args);
-        return ret;
     }
 	
 	public function onSignInFailed(error:String)

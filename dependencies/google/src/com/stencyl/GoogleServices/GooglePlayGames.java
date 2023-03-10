@@ -3,45 +3,24 @@ package com.stencyl.GoogleServices;
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.nio.charset.Charset;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Handler;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
-import android.view.Gravity;
-import android.view.animation.Animation;
-import android.view.animation.AlphaAnimation;
 import android.util.Log;
-import androidx.fragment.app.FragmentActivity;
 
-import com.google.android.gms.common.api.*;
 import com.google.android.gms.games.*;
-import com.google.android.gms.games.quest.*;
-import com.google.android.gms.games.event.*;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.GameHelper;
 import com.google.example.games.basegameutils.GameHelper.GameHelperListener;
 
-public class GooglePlayGames extends Extension implements QuestUpdateListener, ResultCallback
+public class GooglePlayGames extends Extension
 {
     static GameHelper mHelper;
-    static HashMap<String, String> questRewards = new HashMap<String,String>();
-    static ArrayList<String> completedQuests = new ArrayList<String>();
-    static boolean newQuestCompleted = false;
-	static GooglePlayGames mpg = null;
-	static HaxeObject haxeCallback;
+    static GooglePlayGames mpg = null;
+    static HaxeObject haxeCallback;
     
     public GooglePlayGames()
     {
-    	super();
-    	
-    	mpg = this;
+        super();
+        
+        mpg = this;
     }
     
     static public void initGooglePlayGames(final HaxeObject obj)
@@ -50,103 +29,99 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
-				haxeCallback = obj;
+            public void run()
+            {
+                haxeCallback = obj;
                 if (mHelper == null){
-				
-					mHelper = new GameHelper(mainActivity, GameHelper.CLIENT_GAMES);
-					
-					GameHelperListener listener = new GameHelper.GameHelperListener() {
-						@Override
-						public void onSignInSucceeded() {
-							// handle sign-in succeess
-							Log.d("GPG", "onSignInSucceeded");
-							Games.Quests.registerQuestUpdateListener(mHelper.getApiClient(), mpg);
-							
-							PendingResult pr = Games.Quests.load(mHelper.getApiClient(), new int[]{Games.Quests.SELECT_COMPLETED}, Games.Quests.SORT_ORDER_ENDING_SOON_FIRST, false);
-							pr.setResultCallback(mpg);							
-						}
-						@Override
-						public void onSignInFailed() {
-							// handle sign-in failure (e.g. show Sign In button)
-							Log.d("GPG", "onSignInFailed");
-							Log.d("GPG", "user cancelled: " + mHelper.hasUserCancellation());
-							
-							if (mHelper.getSignInError() != null)
-							{
-								String serviceErrorCode = String.valueOf(mHelper.getSignInError().getServiceErrorCode());
-								// https://developers.google.com/android/reference/com/google/android/gms/common/ConnectionResult
-								
-								String activityResultCode = String.valueOf(mHelper.getSignInError().getActivityResultCode());
-								// https://developers.google.com/android/reference/com/google/android/gms/games/GamesActivityResultCodes
-								
-								String errorText = new String("GPG sign in failed (service error code: " + serviceErrorCode + ", activity result code: " + activityResultCode + ").");
-								haxeCallback.call("onSignInFailed", new Object[] {errorText});
-							}
-						}
-						
-					};
-					mHelper.setup(listener);
-				}
+                
+                    mHelper = new GameHelper(mainActivity, GameHelper.CLIENT_GAMES);
+                    
+                    GameHelperListener listener = new GameHelper.GameHelperListener() {
+                        @Override
+                        public void onSignInSucceeded() {
+                            // handle sign-in succeess
+                            Log.d("GPG", "onSignInSucceeded");
+                        }
+                        @Override
+                        public void onSignInFailed() {
+                            // handle sign-in failure (e.g. show Sign In button)
+                            Log.d("GPG", "onSignInFailed");
+                            Log.d("GPG", "user cancelled: " + mHelper.hasUserCancellation());
+                            
+                            if (mHelper.getSignInError() != null)
+                            {
+                                String serviceErrorCode = String.valueOf(mHelper.getSignInError().getServiceErrorCode());
+                                // https://developers.google.com/android/reference/com/google/android/gms/common/ConnectionResult
+                                
+                                String activityResultCode = String.valueOf(mHelper.getSignInError().getActivityResultCode());
+                                // https://developers.google.com/android/reference/com/google/android/gms/games/GamesActivityResultCodes
+                                
+                                String errorText = new String("GPG sign in failed (service error code: " + serviceErrorCode + ", activity result code: " + activityResultCode + ").");
+                                haxeCallback.call("onSignInFailed", new Object[] {errorText});
+                            }
+                        }
+                        
+                    };
+                    mHelper.setup(listener);
+                }
                                 
                 mHelper.beginUserInitiatedSignIn();
             }
         });
     }
-	
-	static public void signOutGooglePlayGames()
+    
+    static public void signOutGooglePlayGames()
     {
         Log.d("GPG", "Signing out from Google Play Games (Java)");
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                  if (mHelper != null && mHelper.isSignedIn())
                 {
-					mHelper.signOut();
-				}
+                    mHelper.signOut();
+                }
             }
         });
     }
-	
-	static public boolean isSignedIn()
-	{
-		if (mHelper != null && mHelper.isSignedIn())
+    
+    static public boolean isSignedIn()
+    {
+        if (mHelper != null && mHelper.isSignedIn())
         {
-			return true;
-		}
-		else return false;
-	}
-	
-	static public boolean isConnecting()
-	{
-		if (mHelper != null && mHelper.isConnecting())
+            return true;
+        }
+        else return false;
+    }
+    
+    static public boolean isConnecting()
+    {
+        if (mHelper != null && mHelper.isConnecting())
         {
-			return true;
-		}
-		else return false;
-	}
-	
-	static public boolean hasSignInError()
-	{
-		if (mHelper != null && mHelper.hasSignInError())
+            return true;
+        }
+        else return false;
+    }
+    
+    static public boolean hasSignInError()
+    {
+        if (mHelper != null && mHelper.hasSignInError())
         {
-			return true;
-		}
-		else return false;
-	}
-	
-	static public boolean hasUserCancellation()
-	{
-		
-		if (mHelper != null && mHelper.hasUserCancellation())
+            return true;
+        }
+        else return false;
+    }
+    
+    static public boolean hasUserCancellation()
+    {
+        
+        if (mHelper != null && mHelper.hasUserCancellation())
         {
-			return true;
-		}
-		else return false;
-	}	
+            return true;
+        }
+        else return false;
+    }   
     
     static public void showAchievements()
     {
@@ -154,8 +129,8 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null && mHelper.isSignedIn())
                 {
                     Log.d("GPG", "Showing Achievements (Java 2)");
@@ -181,7 +156,7 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         if (mHelper != null && mHelper.isSignedIn())
         {
-               	Log.d("GPG", "Incrementing Achievement " + id + " (Java 2)");
+                Log.d("GPG", "Incrementing Achievement " + id + " (Java 2)");
                 Games.Achievements.increment(mHelper.getApiClient(), id, numSteps);
         }
             
@@ -207,15 +182,15 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         }
             
     }
-	
-	static public void showAllLeaderboards()
+    
+    static public void showAllLeaderboards()
     {
         Log.d("GPG", "Showing Leaderboards (Java 1)");
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null && mHelper.isSignedIn())
                 {
                     Log.d("GPG", "Showing All Leaderboards (Java 2)");
@@ -224,8 +199,8 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
             }
         });
     }
-	
-	
+    
+    
     
     static public void showLeaderboard(final String id)
     {
@@ -233,8 +208,8 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null && mHelper.isSignedIn())
                 {
                     Log.d("GPG", "Showing Leaderboards (Java 2)");
@@ -250,7 +225,7 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         if (mHelper != null && mHelper.isSignedIn())
         {
-        	Log.d("GPG", "Submitting Score " + score + " to " + id + " (Java 2)");
+            Log.d("GPG", "Submitting Score " + score + " to " + id + " (Java 2)");
             Games.Leaderboards.submitScore(mHelper.getApiClient(), id, score);
         }
             
@@ -262,56 +237,17 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         if (mHelper != null && mHelper.isSignedIn())
         {
-        	Log.d("GPG", "Updating Event " + id + " by " + amount + " (Java 2)");
+            Log.d("GPG", "Updating Event " + id + " by " + amount + " (Java 2)");
             Games.Events.increment(mHelper.getApiClient(), id, amount);
         }            
-    }
-    
-    static public void showQuests()
-    {
-        Log.d("GPG", "Showing Quests (Java 1)");
-        
-        mainActivity.runOnUiThread(new Runnable()
-        {
-        	public void run()
-        	{
-                if (mHelper != null && mHelper.isSignedIn())
-                {
-                    Log.d("GPG", "Showing Quests (Java 2)");
-                    mainActivity.startActivityForResult(Games.Quests.getQuestsIntent(mHelper.getApiClient(), new int[]{Quests.SELECT_OPEN, Quests.SELECT_UPCOMING, Quests.SELECT_ACCEPTED, Quests.SELECT_COMPLETED}), 1);
-                }
-            }
-        });
-    }
-    
-    static public String getQuestReward(String id)
-    {
-    	return questRewards.get(id);
-    }
-    
-    static public String[] getCompletedQuestList()
-    {
-    	
-    	return completedQuests.toArray(new String[completedQuests.size()]);    	
-    }
-    
-    static public boolean hasNewQuestCompleted()
-    {
-    	if (newQuestCompleted)
-    	{
-    		newQuestCompleted = false;
-    		return true;
-    	}
-    	
-    	return false;
     }
     
     public void onStart()
     {
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null)
                 {
                     mHelper.onStart(mainActivity);
@@ -324,8 +260,8 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
     {
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null)
                 {
                     mHelper.onStop();
@@ -342,8 +278,8 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         
         mainActivity.runOnUiThread(new Runnable()
         {
-        	public void run()
-        	{
+            public void run()
+            {
                 if (mHelper != null)
                 {
                     mHelper.onActivityResult(req, res, dat);
@@ -352,51 +288,5 @@ public class GooglePlayGames extends Extension implements QuestUpdateListener, R
         });
         
         return true;
-    }
-    
-    public void onResult(Result result) 
-    {
-    	if (result == null || !(result instanceof Quests.LoadQuestsResult))
-    	{
-    		return;
-    	}
-    	
-        Quests.LoadQuestsResult r = (Quests.LoadQuestsResult)result;
-        QuestBuffer qb = r.getQuests();
-
-        completedQuests.clear();
-        
-        if (qb != null)
-        {
-        	for (int i=0; i < qb.getCount(); i++) {
-        		completedQuests.add(qb.get(i).getQuestId());
-        	}
-        	
-        	qb.close();        	
-        }
-        
-        
-    }
-    
-    public void onQuestCompleted(Quest quest) {
-
-    	Log.d("GPG", "New Quest Completed, Updating info. (Java 1)");
-        // Claim the quest reward.
-        Games.Quests.claim(mHelper.getApiClient(), quest.getQuestId(),
-                quest.getCurrentMilestone().getMilestoneId());
-
-        // Process the RewardData to provision a specific reward.
-        String reward = new
-              String(quest.getCurrentMilestone().getCompletionRewardData(),
-              Charset.forName("UTF-8"));
-
-        // Provision the reward; this is specific to your game. Your game
-        // should also let the player know the quest was completed and
-        // the reward was claimed; for example, by displaying a toast.
-        // ...
-                
-        questRewards.put(quest.getQuestId(), reward);    
-        completedQuests.add(quest.getQuestId());
-        newQuestCompleted = true;
     }
 }

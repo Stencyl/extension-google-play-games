@@ -14,11 +14,6 @@
 			<block tag="gpg-increment-achievments" />
 			<block tag="gpg-submit-score" />
 			<spacer />
-			<block tag="gpg-update-event" />
-			<block tag="gpg-check-quests" />
-			<block tag="gpg-completed-quests" />
-			<block tag="gpg-get-reward" />
-			<spacer />
 		</merge-section>
 	</palette-addon>
 

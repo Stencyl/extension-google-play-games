@@ -162,10 +162,6 @@ public abstract class BaseGameActivity extends FragmentActivity implements
         enableDebugLog(enabled);
     }
 
-    protected String getInvitationId() {
-        return mHelper.getInvitationId();
-    }
-
     protected void reconnectClient() {
         mHelper.reconnectClient();
     }

@@ -31,7 +31,6 @@ android {
 
 dependencies {
 	api project(':deps:extension-api')
-	implementation 'com.google.android.gms:play-services-games:10.0.1'
-	implementation 'com.google.android.gms:play-services-plus:10.0.1'
+	implementation 'com.google.android.gms:play-services-games:23.1.0'
 	implementation 'androidx.appcompat:appcompat:1.2.0'
 }

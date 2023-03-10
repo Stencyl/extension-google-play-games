@@ -13,9 +13,4 @@ class GooglePlayGames
     public static function showAllLeaderboards():Void {}
     public static function showLeaderboard(id:String):Void {}
     public static function submitScore(id:String, score:Int):Void {}
-    public static function showQuests():Void {}
-    public static function updateEvent(id:String, amount:Int):Void {}
-    public static function hasNewQuestCompleted():Bool { return false; }
-    public static function getQuestReward(id:String):String { return ""; }
-    public static function getCompletedQuestList():Array<String> { return []; }
 }
