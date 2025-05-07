@@ -39,6 +39,7 @@ class GooglePlayGames
 	
 	public static function signOutGooglePlayGames():Void
     {
+    //
         if (android_signOutGooglePlayGames == null)
         {
             android_signOutGooglePlayGames = JNI.createStaticMethod(ANDROID_CLASS, "signOutGooglePlayGames", "()V", true);
@@ -74,13 +75,9 @@ class GooglePlayGames
             }
             return android_getConnectionInfoHasSignInError();
 		}
-		else if (info == 3)
+		else if (info == 3) //user cancellation
 		{
-			if (android_getConnectionInfoHasUserCancellation == null)
-            {
-                android_getConnectionInfoHasUserCancellation = JNI.createStaticMethod(ANDROID_CLASS, "hasUserCancellation", "()Z", true);
-            }
-            return android_getConnectionInfoHasUserCancellation();
+			return false;
 		}
 		
 		return false;

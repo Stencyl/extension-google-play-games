@@ -33,6 +33,6 @@ android {
 
 dependencies {
 	api project(':deps:extension-api')
-	implementation 'com.google.android.gms:play-services-games:23.1.0'
+	implementation 'com.google.android.gms:play-services-games-v2:20.1.2'
 	implementation 'androidx.appcompat:appcompat:1.2.0'
 }
