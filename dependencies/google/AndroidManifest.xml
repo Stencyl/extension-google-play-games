@@ -10,7 +10,6 @@
         android:value="@integer/google_play_services_version" />
         
         <meta-data android:value="@string/app_id" android:name="com.google.android.gms.games.APP_ID"/>
-        <meta-data android:value="@string/app_id" android:name="com.google.android.gms.appstate.APP_ID"/> -->
         
 	</application>
 	
