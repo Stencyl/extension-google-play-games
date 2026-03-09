@@ -33,6 +33,13 @@ gpg-unlock-achievments.help=Unlock a game's achievement.
 gpg-update-event=update event with ID %0 with value %1 [c:google]
 gpg-update-event.help=Update an event by the given amount.
 
+gpg-force-login2=force new login
+gpg-force-login2.help=Force a new login to Google Play Games
+gpg-save-cloud=save local file %1 to Google Cloud slot %0 with description %2
+gpg-save-cloud.help=Saves a local file to Google Play Games Cloud Saves (Snapshots)
+gpg-load-cloud=load Google Cloud slot %0 and overwrite local file %1
+gpg-load-cloud.help=Loads a saved game from Google Play Games Cloud Saves and overwrites a local file
+
 events.defs.gpg=Google Play Games
 
 # block dropdowns
