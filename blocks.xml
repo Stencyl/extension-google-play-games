@@ -143,4 +143,34 @@
         </fields>
     </block>
 
+    <block tag="gpg-force-login2"
+       code="com.stencyl.googleplaygames.GooglePlayGames.forceLogin();"
+       type="action"
+       returns="void"
+       category="mobile"
+       helpURL="game-mobile">
+</block>
+
+
+<block tag="gpg-save-cloud" code="com.stencyl.googleplaygames.GooglePlayGames.saveToCloud(~, ~, ~);" type="action" returns="void" category="mobile" helpURL="game-mobile">
+<fields>
+<text order="0" />
+<text order="1" />
+<text order="2" />
+</fields>
+</block>
+
+<block tag="gpg-load-cloud" code="com.stencyl.googleplaygames.GooglePlayGames.loadFromCloud(~, ~);" type="action" returns="void" category="mobile" helpURL="game-mobile">
+<fields>
+<text order="0" />
+<text order="1" />
+</fields>
+</block>
+
+<block tag="gpg-show-saves-ui" code="com.stencyl.googleplaygames.GooglePlayGames.showSavedGamesUI(~);" type="action" returns="void" category="mobile" helpURL="game-mobile">
+<fields>
+<text order="0" />
+</fields>
+</block>
+    
 </blocks>

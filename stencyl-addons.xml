@@ -10,6 +10,11 @@
 			<block tag="gpg-show" />
 			<block tag="gpg-show-leaderboard" />
 			<spacer />
+			<block tag="gpg-force-login2" />
+			<block tag="gpg-save-cloud" />
+			<block tag="gpg-load-cloud" />
+			<spacer />
+			<block tag="gpg-show-saves-ui" />
 			<block tag="gpg-unlock-achievments" />
 			<block tag="gpg-increment-achievments" />
 			<block tag="gpg-submit-score" />

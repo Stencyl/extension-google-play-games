@@ -20,8 +20,13 @@ class GooglePlayGames
     private static var android_showAllLeaderboards:Dynamic;
     private static var android_showLeaderboard:Dynamic;
     private static var android_submitScore:Dynamic;
-    
-    public function new()
+	 // --- NEW - Google Games force new login 
+	private static var android_forceLogin:Dynamic;
+        // --- NEW - Google Saved Games 
+    private static var android_saveToCloud:Dynamic;
+    private static var android_loadFromCloud:Dynamic;
+    private static var android_showSavedGamesUI:Dynamic;
+        public function new()
     {
     }
     
@@ -36,7 +41,26 @@ class GooglePlayGames
 		args.push(new GooglePlayGames());
         android_initGooglePlayGames(args);
     }
-	
+	// --- Force interactive sign-in via JNI (no external lib)
+public static function forceLogin():Void
+{
+    #if android
+    if (android_forceLogin == null)
+    {
+        android_forceLogin = JNI.createStaticMethod(
+            ANDROID_CLASS,  // "com/stencyl/GoogleServices/GooglePlayGames"
+            "forceLogin",
+            "()V",
+            true
+        );
+    }
+    android_forceLogin();
+    #else
+    trace("PGS: forceLogin() ignored (non-Android)");
+    #end
+}
+
+// --- Force interactive sign-in via JNI (no external lib) END
 	public static function signOutGooglePlayGames():Void
     {
     //
@@ -170,7 +194,53 @@ class GooglePlayGames
         var args:Array<Dynamic> = [id, score];
         android_submitScore(args);
     }
-	
+		// --- NEW - Google Saved Games
+
+	// --- SNAPSHOTS API (Saved Games)
+
+    public static function saveToCloud(localFileName:String, slotName:String, description:String):Void
+    {
+        #if android
+        if (android_saveToCloud == null)
+        {
+            android_saveToCloud = JNI.createStaticMethod(ANDROID_CLASS, "saveToCloud", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", true);
+        }
+        var args:Array<Dynamic> = [localFileName, slotName, description];
+        android_saveToCloud(args);
+        #else
+        trace("PGS Snapshots: saveToCloud() ignored (non-Android)");
+        #end
+    }
+
+    public static function loadFromCloud(slotName:String, localFileName:String):Void
+    {
+        #if android
+        if (android_loadFromCloud == null)
+        {
+            android_loadFromCloud = JNI.createStaticMethod(ANDROID_CLASS, "loadFromCloud", "(Ljava/lang/String;Ljava/lang/String;)V", true);
+        }
+        var args:Array<Dynamic> = [slotName, localFileName];
+        android_loadFromCloud(args);
+        #else
+        trace("PGS Snapshots: loadFromCloud() ignored (non-Android)");
+        #end
+    }
+
+    public static function showSavedGamesUI(title:String):Void
+    {
+        #if android
+        if (android_showSavedGamesUI == null)
+        {
+            android_showSavedGamesUI = JNI.createStaticMethod(ANDROID_CLASS, "showSavedGamesUI", "(Ljava/lang/String;)V", true);
+        }
+        var args:Array<Dynamic> = [title];
+        android_showSavedGamesUI(args);
+        #else
+        trace("PGS Snapshots: showSavedGamesUI() ignored (non-Android)");
+        #end
+    }
+	// --- NEW - Google Saved Games
+
 	public function onSignInFailed(error:String)
 	{
 		trace(error);
