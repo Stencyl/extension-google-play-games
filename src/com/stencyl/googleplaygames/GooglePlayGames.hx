@@ -20,6 +20,10 @@ class GooglePlayGames
     private static var android_showAllLeaderboards:Dynamic;
     private static var android_showLeaderboard:Dynamic;
     private static var android_submitScore:Dynamic;
+	private static var android_forceLogin:Dynamic;
+    private static var android_saveToCloud:Dynamic;
+    private static var android_loadFromCloud:Dynamic;
+    private static var android_showSavedGamesUI:Dynamic;
     
     public function new()
     {
@@ -36,10 +40,18 @@ class GooglePlayGames
 		args.push(new GooglePlayGames());
         android_initGooglePlayGames(args);
     }
-	
+
+    public static function forceLogin():Void
+    {
+        if (android_forceLogin == null)
+        {
+            android_forceLogin = JNI.createStaticMethod(ANDROID_CLASS, "forceLogin", "()V", true);
+        }
+        android_forceLogin();
+    }
+
 	public static function signOutGooglePlayGames():Void
     {
-    //
         if (android_signOutGooglePlayGames == null)
         {
             android_signOutGooglePlayGames = JNI.createStaticMethod(ANDROID_CLASS, "signOutGooglePlayGames", "()V", true);
@@ -171,6 +183,39 @@ class GooglePlayGames
         android_submitScore(args);
     }
 	
+    public static function saveToCloud(localFileName:String, slotName:String, description:String):Void
+    {
+        if (android_saveToCloud == null)
+        {
+            android_saveToCloud = JNI.createStaticMethod(ANDROID_CLASS, "saveToCloud", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", true);
+        }
+    
+        var args:Array<Dynamic> = [localFileName, slotName, description];
+        android_saveToCloud(args);
+    }
+
+    public static function loadFromCloud(slotName:String, localFileName:String):Void
+    {
+        if (android_loadFromCloud == null)
+        {
+            android_loadFromCloud = JNI.createStaticMethod(ANDROID_CLASS, "loadFromCloud", "(Ljava/lang/String;Ljava/lang/String;)V", true);
+        }
+        
+        var args:Array<Dynamic> = [slotName, localFileName];
+        android_loadFromCloud(args);
+    }
+
+    public static function showSavedGamesUI(title:String):Void
+    {
+        if (android_showSavedGamesUI == null)
+        {
+            android_showSavedGamesUI = JNI.createStaticMethod(ANDROID_CLASS, "showSavedGamesUI", "(Ljava/lang/String;)V", true);
+        }
+        
+        var args:Array<Dynamic> = [title];
+        android_showSavedGamesUI(args);
+    }
+
 	public function onSignInFailed(error:String)
 	{
 		trace(error);
