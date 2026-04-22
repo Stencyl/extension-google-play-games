@@ -1,4 +1,5 @@
 package com.stencyl.GoogleServices;
+
 import org.haxe.extension.Extension;
 import org.haxe.lime.HaxeObject;
 
@@ -8,25 +9,21 @@ import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
-// Play Games: explicit imports only (no wildcards)
 import com.google.android.gms.games.PlayGames;
 import com.google.android.gms.games.AuthenticationResult;
 import com.google.android.gms.games.GamesSignInClient;
 import com.google.android.gms.games.AchievementsClient;
 import com.google.android.gms.games.LeaderboardsClient;
 import com.google.android.gms.games.EventsClient;
-
-// --- NEW IMPORTS FOR SNAPSHOTS API ---
 import com.google.android.gms.games.SnapshotsClient;
 import com.google.android.gms.games.snapshot.Snapshot;
 import com.google.android.gms.games.snapshot.SnapshotMetadataChange;
+import com.google.android.gms.tasks.Task;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-// -------------------------------------
-
-import com.google.android.gms.tasks.Task;
 
 public class GooglePlayGames extends Extension
 {
@@ -37,7 +34,6 @@ public class GooglePlayGames extends Extension
     static boolean connecting;
     static boolean signInError;
 
-    // We need a specific intent code for the Saved Games UI
     private static final int RC_SAVED_GAMES = 9009;
 
     public GooglePlayGames()
@@ -69,77 +65,74 @@ public class GooglePlayGames extends Extension
         });
     }
 
-// --------- Silent Sign-In: checks status, NO dialog
-private static void signInSilently() {
-    GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(Extension.mainActivity);
-    if (!signedIn) connecting = true;
+    // --------- Silent Sign-In: checks status, NO dialog
+    private static void signInSilently() {
+        GamesSignInClient gamesSignInClient = PlayGames.getGamesSignInClient(Extension.mainActivity);
+        if (!signedIn) connecting = true;
 
-    gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
-        connecting = false;
-        signedIn = false;
-        signInError = false;
+        gamesSignInClient.isAuthenticated().addOnCompleteListener(isAuthenticatedTask -> {
+            connecting = false;
+            signedIn = false;
+            signInError = false;
 
-        if (!isAuthenticatedTask.isSuccessful()) {
-            String message = (isAuthenticatedTask.getException() == null)
-                    ? "Failed to sign in"
-                    : isAuthenticatedTask.getException().getMessage();
-            Log.e("GPG", "onSignInFailed", isAuthenticatedTask.getException());
-            signInError = true;
-            if (haxeCallback != null) {
-                haxeCallback.call("onSignInFailed", new Object[]{ message });
-            }
-        }
-        else {
-            AuthenticationResult result = isAuthenticatedTask.getResult();
-            if (result == null || !result.isAuthenticated()) {
-                Log.d("GPG", "notAuthenticated");
+            if (!isAuthenticatedTask.isSuccessful()) {
+                String message = (isAuthenticatedTask.getException() == null)
+                        ? "Failed to sign in"
+                        : isAuthenticatedTask.getException().getMessage();
+                Log.e("GPG", "onSignInFailed", isAuthenticatedTask.getException());
                 signInError = true;
                 if (haxeCallback != null) {
-                    haxeCallback.call("onSignInFailed", new Object[]{ "Not signed in" });
+                    haxeCallback.call("onSignInFailed", new Object[]{ message });
                 }
             }
             else {
-                Log.d("GPG", "onSignInSucceeded");
-                signedIn = true;      // <- important for leaderboards
-                signInError = false;
-            }
-        }
-    });
-}
-
-
-// --------- ForceLogin: interactive, set flags cleanly
-public static void forceLogin() {
-    final Activity activity = Extension.mainActivity;
-    activity.runOnUiThread(new Runnable() {
-        @Override public void run() {
-            GamesSignInClient client = PlayGames.getGamesSignInClient(activity);
-            connecting = true;
-            client.signIn().addOnCompleteListener(signInTask -> {
-                connecting = false;
-                if (signInTask.isSuccessful()
-                        && signInTask.getResult() != null
-                        && signInTask.getResult().isAuthenticated()) {
-                    signedIn = true;
-                    signInError = false;
-                    Log.d("GPG", "Interactive sign-in succeeded");
-                } else {
-                    signedIn = false;
+                AuthenticationResult result = isAuthenticatedTask.getResult();
+                if (result == null || !result.isAuthenticated()) {
+                    Log.d("GPG", "notAuthenticated");
                     signInError = true;
-                    String msg = (signInTask.getException() != null)
-                            ? signInTask.getException().getMessage()
-                            : "Sign-in cancelled or failed";
-                    Log.d("GPG", "Interactive sign-in failed: " + msg);
                     if (haxeCallback != null) {
-                        haxeCallback.call("onSignInFailed", new Object[]{ msg });
+                        haxeCallback.call("onSignInFailed", new Object[]{ "Not signed in" });
                     }
                 }
-            });
-        }
-    });
-}
+                else {
+                    Log.d("GPG", "onSignInSucceeded");
+                    signedIn = true;      // <- important for leaderboards
+                    signInError = false;
+                }
+            }
+        });
+    }
 
-
+    // --------- ForceLogin: interactive, set flags cleanly
+    public static void forceLogin() {
+        final Activity activity = Extension.mainActivity;
+        activity.runOnUiThread(new Runnable() {
+            @Override public void run() {
+                GamesSignInClient client = PlayGames.getGamesSignInClient(activity);
+                connecting = true;
+                client.signIn().addOnCompleteListener(signInTask -> {
+                    connecting = false;
+                    if (signInTask.isSuccessful()
+                            && signInTask.getResult() != null
+                            && signInTask.getResult().isAuthenticated()) {
+                        signedIn = true;
+                        signInError = false;
+                        Log.d("GPG", "Interactive sign-in succeeded");
+                    } else {
+                        signedIn = false;
+                        signInError = true;
+                        String msg = (signInTask.getException() != null)
+                                ? signInTask.getException().getMessage()
+                                : "Sign-in cancelled or failed";
+                        Log.d("GPG", "Interactive sign-in failed: " + msg);
+                        if (haxeCallback != null) {
+                            haxeCallback.call("onSignInFailed", new Object[]{ msg });
+                        }
+                    }
+                });
+            }
+        });
+    }
 
     // Helper to start Task<Intent> (for achievements/leaderboards)
     private static void startActivity(Task<Intent> intentTask, String info)
@@ -157,11 +150,22 @@ public static void forceLogin() {
     }
 
     @SuppressWarnings("unused")
-    public static boolean isSignedIn()    { return signedIn; }
+    public static boolean isSignedIn()
+    {
+        return signedIn;
+    }
+
     @SuppressWarnings("unused")
-    public static boolean isConnecting()  { return connecting; }
+    public static boolean isConnecting()
+    {
+        return connecting;
+    }
+
     @SuppressWarnings("unused")
-    public static boolean hasSignInError(){ return signInError; }
+    public static boolean hasSignInError()
+    {
+        return signInError;
+    }
 
     @SuppressWarnings("unused")
     public static void signOutGooglePlayGames()
