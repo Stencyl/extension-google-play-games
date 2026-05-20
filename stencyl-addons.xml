@@ -6,19 +6,17 @@
 			<header title="@events.defs.gpg" icon="question" action="help:google-play-games" />
 			<block tag="gpg-initialize" />
 			<block tag="gpg-connection" />
+			<block tag="gpg-force-login2" />
 			<spacer />
 			<block tag="gpg-show" />
 			<block tag="gpg-show-leaderboard" />
-			<spacer />
-			<block tag="gpg-force-login2" />
-			<block tag="gpg-save-cloud" />
-			<block tag="gpg-load-cloud" />
-			<spacer />
-			<block tag="gpg-show-saves-ui" />
 			<block tag="gpg-unlock-achievments" />
 			<block tag="gpg-increment-achievments" />
 			<block tag="gpg-submit-score" />
 			<spacer />
+			<block tag="gpg-show-saves-ui" />
+			<block tag="gpg-save-cloud" />
+			<block tag="gpg-load-cloud" />
 		</merge-section>
 	</palette-addon>
 
