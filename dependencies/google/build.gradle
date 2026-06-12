@@ -35,4 +35,9 @@ dependencies {
 	api project(':deps:extension-api')
 	implementation 'com.google.android.gms:play-services-games-v2:20.1.2'
 	implementation 'androidx.appcompat:appcompat:1.2.0'
+	constraints {
+		implementation("androidx.fragment:fragment:1.8.9") {
+			because("Blocks older versions that have been marked as outdated")
+		}
+	}
 }
